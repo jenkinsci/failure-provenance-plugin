@@ -1,0 +1,4 @@
+<?jelly escape-by-default='true'?>
+<div>
+  Failure Provenance records normalized failure signatures and links recurring build failures to their earlier occurrences.
+</div>

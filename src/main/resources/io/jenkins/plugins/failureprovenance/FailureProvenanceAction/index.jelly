@@ -1,0 +1,31 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout" xmlns:t="/lib/hudson">
+  <l:layout title="Failure Provenance">
+    <l:main-panel>
+      <h1>Failure Provenance</h1>
+      <j:choose>
+        <j:when test="${it.newFailure}">
+          <p>This is a new failure signature within the inspected build history.</p>
+        </j:when>
+        <j:otherwise>
+          <p>This failure has been seen before. Review the matching builds before deciding whether it is related to the current change.</p>
+          <table class="jenkins-table sortable">
+            <thead><tr><th>Build</th><th>Similarity</th></tr></thead>
+            <tbody>
+              <j:forEach var="match" items="${it.matches}">
+                <tr>
+                  <td><a href="${match.build.url}">${match.build.displayName}</a></td>
+                  <td>${match.similarityPercent}</td>
+                </tr>
+              </j:forEach>
+            </tbody>
+          </table>
+        </j:otherwise>
+      </j:choose>
+      <h2>Signature</h2>
+      <p><code>${it.shortSignature}</code></p>
+      <h2>Normalized evidence</h2>
+      <pre>${it.normalizedExcerpt}</pre>
+    </l:main-panel>
+  </l:layout>
+</j:jelly>
