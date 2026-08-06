@@ -7,7 +7,6 @@ import hudson.model.TaskListener;
 import hudson.model.listeners.RunListener;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Extension
@@ -52,22 +51,20 @@ public final class FailureProvenanceListener extends RunListener<Run<?, ?>> {
             Run<?, ?> run, String normalizedExcerpt, String signature) {
         List<FailureProvenanceAction.Match> matches = new ArrayList<>();
         int inspected = 0;
-        for (Run<?, ?> candidate : run.getParent().getBuilds()) {
-            if (candidate.equals(run) || inspected++ >= HISTORY_LIMIT) {
-                continue;
-            }
+        Run<?, ?> candidate = run.getPreviousBuild();
+        while (candidate != null && inspected < HISTORY_LIMIT) {
+            inspected++;
             FailureProvenanceAction action = candidate.getAction(FailureProvenanceAction.class);
-            if (action == null) {
-                continue;
+            if (action != null) {
+                double similarity = signature.equals(action.getSignature())
+                        ? 1.0
+                        : FailureSignature.similarity(normalizedExcerpt, action.getNormalizedExcerpt());
+                if (similarity >= SIMILARITY_THRESHOLD) {
+                    matches.add(new FailureProvenanceAction.Match(candidate, similarity));
+                }
             }
-            double similarity = signature.equals(action.getSignature())
-                    ? 1.0
-                    : FailureSignature.similarity(normalizedExcerpt, action.getNormalizedExcerpt());
-            if (similarity >= SIMILARITY_THRESHOLD) {
-                matches.add(new FailureProvenanceAction.Match(candidate, similarity));
-            }
+            candidate = candidate.getPreviousBuild();
         }
-        matches.sort(Comparator.comparing(match -> match.getBuild().getNumber(), Comparator.reverseOrder()));
         return matches;
     }
 }
