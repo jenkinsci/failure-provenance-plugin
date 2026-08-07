@@ -9,18 +9,12 @@ For every failed or unstable build, the plugin creates a normalized signature fr
 - Extracts a bounded error-focused console excerpt after a failed or unstable build.
 - Normalizes volatile values such as timestamps, UUIDs, workspace paths, ports, build numbers, and hex identifiers.
 - Stores a SHA-256 signature and a short redacted excerpt with the build.
-- Finds exact and near matches among the previous 50 builds of the same job.
+- Finds exact and near matches among a configurable number of previous builds of the same job.
 - Keeps the conclusion evidence-based: it reports recurrence, never claims root cause or automatically retries a build.
 
-## Installation
+## Configuration
 
-Build the plugin with Java 17 or newer:
-
-```bash
-mvn verify
-```
-
-Upload `target/failure-provenance.hpi` through **Manage Jenkins -> Plugins -> Advanced settings**.
+After installation, Jenkins administrators can set **Manage Jenkins -> System -> Failure Provenance -> History limit**. The default is 50 previous builds; values from 1 through 500 are supported. Changes apply to subsequently completed builds.
 
 ## Current limits
 

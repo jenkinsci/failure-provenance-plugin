@@ -14,7 +14,14 @@
             <tbody>
               <j:forEach var="match" items="${it.matches}">
                 <tr>
-                  <td><a href="${match.build.url}">${match.build.displayName}</a></td>
+                  <td>
+                    <j:choose>
+                      <j:when test="${match.buildAvailable}">
+                        <a class="jenkins-table__link model-link" href="${match.buildUrl}">${match.buildDisplayName}</a>
+                      </j:when>
+                      <j:otherwise>${match.buildDisplayName}</j:otherwise>
+                    </j:choose>
+                  </td>
                   <td>${match.similarityPercent}</td>
                 </tr>
               </j:forEach>

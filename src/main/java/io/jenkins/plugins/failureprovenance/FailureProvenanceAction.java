@@ -5,11 +5,14 @@ import hudson.model.Run;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import jenkins.model.RunAction2;
+import org.springframework.security.access.AccessDeniedException;
 
-public final class FailureProvenanceAction implements Action {
+public final class FailureProvenanceAction implements RunAction2 {
     private final String signature;
     private final String normalizedExcerpt;
     private final List<Match> matches;
+    private transient Run<?, ?> owner;
 
     FailureProvenanceAction(String signature, String normalizedExcerpt, List<Match> matches) {
         this.signature = signature;
@@ -38,6 +41,20 @@ public final class FailureProvenanceAction implements Action {
     }
 
     @Override
+    public void onAttached(Run<?, ?> run) {
+        owner = run;
+    }
+
+    @Override
+    public void onLoad(Run<?, ?> run) {
+        owner = run;
+    }
+
+    public Run<?, ?> getOwner() {
+        return owner;
+    }
+
+    @Override
     public String getIconFileName() {
         return "symbol-search plugin-ionicons-api";
     }
@@ -53,16 +70,38 @@ public final class FailureProvenanceAction implements Action {
     }
 
     static final class Match {
-        private final Run<?, ?> build;
+        private final String runId;
         private final double similarity;
 
         Match(Run<?, ?> build, double similarity) {
-            this.build = build;
+            runId = build.getExternalizableId();
             this.similarity = similarity;
         }
 
         public Run<?, ?> getBuild() {
-            return build;
+            try {
+                return Run.fromExternalizableId(runId);
+            } catch (AccessDeniedException | IllegalArgumentException exception) {
+                return null;
+            }
+        }
+
+        public String getRunId() {
+            return runId;
+        }
+
+        public boolean isBuildAvailable() {
+            return getBuild() != null;
+        }
+
+        public String getBuildDisplayName() {
+            Run<?, ?> build = getBuild();
+            return build == null ? "Deleted build (" + runId + ")" : build.getDisplayName();
+        }
+
+        public String getBuildUrl() {
+            Run<?, ?> build = getBuild();
+            return build == null ? null : build.getUrl();
         }
 
         public String getSimilarityPercent() {

@@ -1,0 +1,8 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+  <f:section title="Failure Provenance">
+    <f:entry title="History limit" field="historyLimit" description="Number of previous builds to inspect for matching failures (1–500).">
+      <f:number min="1" max="500"/>
+    </f:entry>
+  </f:section>
+</j:jelly>

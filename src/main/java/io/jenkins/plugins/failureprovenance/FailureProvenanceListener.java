@@ -12,7 +12,6 @@ import java.util.List;
 @Extension
 public final class FailureProvenanceListener extends RunListener<Run<?, ?>> {
     private static final int LOG_LINE_LIMIT = 300;
-    private static final int HISTORY_LIMIT = 50;
     private static final double SIMILARITY_THRESHOLD = 0.72;
 
     @Override
@@ -51,8 +50,9 @@ public final class FailureProvenanceListener extends RunListener<Run<?, ?>> {
             Run<?, ?> run, String normalizedExcerpt, String signature) {
         List<FailureProvenanceAction.Match> matches = new ArrayList<>();
         int inspected = 0;
+        int historyLimit = FailureProvenanceConfiguration.get().getHistoryLimit();
         Run<?, ?> candidate = run.getPreviousBuild();
-        while (candidate != null && inspected < HISTORY_LIMIT) {
+        while (candidate != null && inspected < historyLimit) {
             inspected++;
             FailureProvenanceAction action = candidate.getAction(FailureProvenanceAction.class);
             if (action != null) {
