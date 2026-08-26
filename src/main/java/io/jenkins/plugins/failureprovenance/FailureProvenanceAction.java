@@ -69,7 +69,7 @@ public final class FailureProvenanceAction implements RunAction2 {
         return "failure-provenance";
     }
 
-    static final class Match {
+    public static final class Match {
         private final String runId;
         private final double similarity;
 

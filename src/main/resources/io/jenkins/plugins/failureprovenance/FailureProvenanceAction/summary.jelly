@@ -1,0 +1,15 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:t="/lib/hudson">
+  <t:summary icon="symbol-search plugin-ionicons-api">
+    <j:choose>
+      <j:when test="${it.newFailure}">
+        <b>Failure Provenance:</b> new failure signature within the inspected build history.
+      </j:when>
+      <j:otherwise>
+        <b>Failure Provenance:</b> this failure has been seen before
+        (${it.matches.size()} matching build(s)).
+      </j:otherwise>
+    </j:choose>
+    <a href="${it.urlName}/">Details</a>
+  </t:summary>
+</j:jelly>

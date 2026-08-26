@@ -12,7 +12,7 @@
 
   <groupId>io.jenkins.plugins</groupId>
   <artifactId>failure-provenance</artifactId>
-  <version>${changelist}</version>
+  <version>1.1-SNAPSHOT</version>
   <packaging>hpi</packaging>
 
   <name>Failure Provenance</name>
@@ -20,7 +20,6 @@
   <url>https://github.com/${gitHubRepo}</url>
 
   <properties>
-    <changelist>999999-SNAPSHOT</changelist>
     <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
     <jenkins.baseline>2.541</jenkins.baseline>
     <jenkins.version>${jenkins.baseline}.3</jenkins.version>
